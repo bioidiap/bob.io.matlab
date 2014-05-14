@@ -9,6 +9,8 @@
 #undef NO_IMPORT_ARRAY
 #endif
 
+#include <xbob.blitz/capi.h>
+#include <xbob.blitz/cleanup.h>
 #include <xbob.io.base/api.h>
 
 #include "file.h"
@@ -57,10 +59,9 @@ static PyObject* create_module (void) {
   }
 
   /* activates matlab plugin */
-  if (!PyBobIoCodec_Register(".mat",
-        "Matlab binary files (v4 and superior)", &make_file)) {
+  if (!PyBobIoCodec_Register(".mat", "Matlab binary files (v4 and superior)", &make_file)) {
     PyErr_Print();
-    return 0;
+    //do not return 0, or we may crash badly
   }
 
   Py_INCREF(m);

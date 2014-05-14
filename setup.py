@@ -10,7 +10,7 @@ import xbob.io.base
 
 include_dirs = [xbob.io.base.get_include()]
 
-packages = ['matio >= 1.3.0']
+packages = ['bob-io >= 2.0.0a2', 'matio >= 1.3.0']
 version = '2.0.0a0'
 
 setup(
@@ -50,6 +50,8 @@ setup(
         ),
       Extension("xbob.io.matlab._library",
         [
+          "xbob/io/matlab/utils.cpp",
+          "xbob/io/matlab/file.cpp",
           "xbob/io/matlab/main.cpp",
           ],
         packages = packages,

@@ -10,6 +10,8 @@
 #ifdef NO_IMPORT_ARRAY
 #undef NO_IMPORT_ARRAY
 #endif
+#include <xbob.blitz/capi.h>
+#include <xbob.blitz/cleanup.h>
 #include <xbob.io.base/api.h>
 #include <matio.h>
 #include <string>
@@ -33,14 +35,6 @@ static int dict_steal(PyObject* d, const char* key, PyObject* value) {
   int retval = PyDict_SetItemString(d, key, value);
   if (retval == 0) return 1; //all good
   return 0; //a problem occurred
-}
-
-/**
- * Creates an str object, from a C or C++ string. Returns a **new
- * reference**.
- */
-static PyObject* make_object(const char* s) {
-  return Py_BuildValue("s", s);
 }
 
 /**
@@ -138,7 +132,7 @@ static PyObject* build_version_dictionary() {
   if (!dict_steal(retval, "NumPy", numpy_version())) return 0;
   if (!dict_set(retval, "Blitz++", BZ_VERSION)) return 0;
   if (!dict_steal(retval, "xbob.blitz", xbob_blitz_version())) return 0;
-  if (!dict_steal(retval, "xbob.io.base", xbob_blitz_version())) return 0;
+  if (!dict_steal(retval, "xbob.io.base", xbob_io_base_version())) return 0;
 
   Py_INCREF(retval);
   return retval;
@@ -174,14 +168,22 @@ static PyObject* create_module (void) {
   auto m_ = make_safe(m); ///< protects against early returns
 
   /* register version numbers and constants */
-  if (PyModule_AddIntConstant(m, "api", XBOB_IO_API_VERSION) < 0)
-    return 0;
   if (PyModule_AddStringConstant(m, "module", XBOB_EXT_MODULE_VERSION) < 0)
     return 0;
   if (PyModule_AddObject(m, "externals", build_version_dictionary()) < 0) return 0;
 
-  /* imports xbob.blitz C-API + dependencies */
-  if (import_xbob_blitz() < 0) return 0;
+  /* imports dependencies */
+  if (import_xbob_blitz() < 0) {
+    PyErr_Print();
+    PyErr_Format(PyExc_ImportError, "cannot import `%s'", XBOB_EXT_MODULE_NAME);
+    return 0;
+  }
+
+  if (import_xbob_io_base() < 0) {
+    PyErr_Print();
+    PyErr_Format(PyExc_ImportError, "cannot import `%s'", XBOB_EXT_MODULE_NAME);
+    return 0;
+  }
 
   Py_INCREF(m);
   return m;

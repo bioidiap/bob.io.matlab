@@ -15,7 +15,7 @@
 #include <boost/shared_ptr.hpp>
 #include <matio.h>
 
-#include <bob/core/array_type.h>
+#include <bob/core/array.h>
 
 /**
  * This method will create a new boost::shared_ptr to mat_t that knows how to

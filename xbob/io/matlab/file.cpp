@@ -38,7 +38,7 @@ class MatFile: public bob::io::File {
 
     void try_reload_map () {
       if (boost::filesystem::exists(m_filename)) {
-        m_map = bob::io::detail::list_variables(m_filename);
+        m_map = list_variables(m_filename);
         m_type = m_map->begin()->second.second;
         m_size = m_map->size();
         m_id.reserve(m_size);
@@ -89,7 +89,7 @@ class MatFile: public bob::io::File {
 
       //now open it for reading
       boost::shared_ptr<mat_t> mat =
-        bob::io::detail::make_matfile(m_filename, m_mode);
+        make_matfile(m_filename, m_mode);
 
       if (!mat) {
         boost::format f("uninitialized matlab file (%s) cannot be read");
@@ -97,7 +97,7 @@ class MatFile: public bob::io::File {
         throw std::runtime_error(f.str());
       }
 
-      bob::io::detail::read_array(mat, buffer);
+      read_array(mat, buffer);
 
     }
 
@@ -108,7 +108,7 @@ class MatFile: public bob::io::File {
 
       //now open it for reading
       boost::shared_ptr<mat_t> mat =
-        bob::io::detail::make_matfile(m_filename, m_mode);
+        make_matfile(m_filename, m_mode);
 
       if (!mat) {
         boost::format f("uninitialized matlab file (%s) cannot be read");
@@ -116,7 +116,7 @@ class MatFile: public bob::io::File {
         throw std::runtime_error(f.str());
       }
 
-      bob::io::detail::read_array(mat, buffer, (*m_map)[m_id[index]].first);
+      read_array(mat, buffer, (*m_map)[m_id[index]].first);
 
     }
 
@@ -127,7 +127,7 @@ class MatFile: public bob::io::File {
 
       //now open it for writing.
       boost::shared_ptr<mat_t> mat =
-        bob::io::detail::make_matfile(m_filename, m_mode);
+        make_matfile(m_filename, m_mode);
 
       if (!mat) {
         boost::format f("cannot open matlab file at '%s' for writing");
@@ -150,7 +150,7 @@ class MatFile: public bob::io::File {
       std::ostringstream varname("array_");
       varname << next_index;
 
-      bob::io::detail::write_array(mat, varname.str(), buffer);
+      write_array(mat, varname.str(), buffer);
 
       mat.reset(); ///< force data flushing
 
@@ -173,7 +173,7 @@ class MatFile: public bob::io::File {
       boost::filesystem::path path (m_filename);
       if (boost::filesystem::exists(m_filename)) boost::filesystem::remove(m_filename);
 
-      boost::shared_ptr<mat_t> mat = bob::io::detail::make_matfile(m_filename,
+      boost::shared_ptr<mat_t> mat = make_matfile(m_filename,
           m_mode);
       if (!mat) {
         boost::format f("cannot open matlab file at '%s' for writing");
@@ -181,7 +181,7 @@ class MatFile: public bob::io::File {
         throw std::runtime_error(f.str());
       }
 
-      bob::io::detail::write_array(mat, varname, buffer);
+      write_array(mat, varname, buffer);
 
       mat.reset(); ///< forces data flushing (not really required here...)
 
@@ -206,6 +206,8 @@ class MatFile: public bob::io::File {
     static std::string s_codecname;
 
 };
+
+std::string MatFile::s_codecname = "bob.matlab";
 
 /**
  * This defines the factory method F that can create codecs of this type.

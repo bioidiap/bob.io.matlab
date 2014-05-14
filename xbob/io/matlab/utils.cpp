@@ -8,19 +8,23 @@
  * Copyright (C) 2011-2013 Idiap Research Institute, Martigny, Switzerland
  */
 
+#include "utils.h"
+
 #include <boost/format.hpp>
 #include <boost/filesystem.hpp>
 #include <bob/io/reorder.h>
 
-#include "utils.h"
+#if MATIO_MAJOR_VERSION > 1 || (MATIO_MAJOR_VERSION == 1 && MATIO_MINOR_VERSION > 3)
+#define MATIO_1_3_OR_OLDER 0
+#else
+#define MATIO_1_3_OR_OLDER 1
+#endif
 
 boost::shared_ptr<mat_t> make_matfile(const std::string& filename, int flags) {
-
   if ((flags == MAT_ACC_RDWR) && !boost::filesystem::exists(filename.c_str())) {
     return boost::shared_ptr<mat_t>(Mat_Create(filename.c_str(), 0), std::ptr_fun(Mat_Close));
   }
   return boost::shared_ptr<mat_t>(Mat_Open(filename.c_str(), flags), std::ptr_fun(Mat_Close));
-
 }
 
 /**
@@ -32,22 +36,30 @@ boost::shared_ptr<mat_t> make_matfile(const std::string& filename, int flags) {
  * for details).
  */
 static boost::shared_ptr<matvar_t> make_matvar(boost::shared_ptr<mat_t>& file) {
+
   return boost::shared_ptr<matvar_t>(Mat_VarReadNext(file.get()), std::ptr_fun(Mat_VarFree));
+
 }
 
 /**
  * This is essentially like make_matvar(), but uses VarReadNextInfo() instead
  * of VarReadNext(), so it does not load the data, but it is faster.
  */
-static boost::shared_ptr<matvar_t> make_matvar_info(boost::shared_ptr<mat_t>& file) {
+static boost::shared_ptr<matvar_t>
+make_matvar_info(boost::shared_ptr<mat_t>& file) {
+
   return boost::shared_ptr<matvar_t>(Mat_VarReadNextInfo(file.get()), std::ptr_fun(Mat_VarFree));
+
 }
 
-static boost::shared_ptr<matvar_t> make_matvar(boost::shared_ptr<mat_t>& file, const std::string& varname) {
+static boost::shared_ptr<matvar_t> make_matvar(boost::shared_ptr<mat_t>& file,
+   const std::string& varname) {
+
   if (!varname.size()) {
     throw std::runtime_error("empty variable name - cannot lookup the file this way");
   }
   return boost::shared_ptr<matvar_t>(Mat_VarRead(file.get(), const_cast<char*>(varname.c_str())), std::ptr_fun(Mat_VarFree));
+
 }
 
 /**
@@ -180,13 +192,18 @@ static bob::core::array::ElementType bob_element_type (int mio_type, bool is_com
   return eltype;
 }
 
-boost::shared_ptr<matvar_t> make_matvar (const std::string& varname, const bob::core::array::interface& buf) {
+boost::shared_ptr<matvar_t> make_matvar
+(const std::string& varname, const bob::core::array::interface& buf) {
 
   const bob::core::array::typeinfo& info = buf.type();
   void* fdata = static_cast<void*>(new char[info.buffer_size()]);
 
   //matio gets dimensions as integers
+# if MATIO_1_3_OR_OLDER == 1
+  int mio_dims[BOB_MAX_DIM];
+# else
   size_t mio_dims[BOB_MAX_DIM];
+# endif
   for (size_t i=0; i<info.nd; ++i) mio_dims[i] = info.shape[i];
 
   switch (info.dtype) {
@@ -198,7 +215,11 @@ boost::shared_ptr<matvar_t> make_matvar (const std::string& varname, const bob::
         uint8_t* real = static_cast<uint8_t*>(fdata);
         uint8_t* imag = real + (info.buffer_size()/2);
         bob::io::row_to_col_order_complex(buf.ptr(), real, imag, info);
+#       if MATIO_1_3_OR_OLDER == 1
+        ComplexSplit mio_complex = {real, imag};
+#       else
         mat_complex_split_t mio_complex = {real, imag};
+#       endif
         return boost::shared_ptr<matvar_t>(Mat_VarCreate(varname.c_str(),
               mio_class_type(info.dtype), mio_data_type(info.dtype),
               info.nd, mio_dims, static_cast<void*>(&mio_complex),
@@ -222,12 +243,21 @@ boost::shared_ptr<matvar_t> make_matvar (const std::string& varname, const bob::
  */
 static void assign_array (boost::shared_ptr<matvar_t> matvar, bob::core::array::interface& buf) {
 
-  bob::core::array::typeinfo info(bob_element_type(matvar->data_type, matvar->isComplex), (size_t)matvar->rank, matvar->dims);
+  bob::core::array::typeinfo info(bob_element_type(matvar->data_type, matvar->isComplex),
+#     if MATIO_1_3_OR_OLDER == 1
+      matvar->rank, matvar->dims);
+#     else
+      (size_t)matvar->rank, matvar->dims);
+#     endif
 
   if(!buf.type().is_compatible(info)) buf.set(info);
 
   if (matvar->isComplex) {
+#   if MATIO_1_3_OR_OLDER == 1
+    ComplexSplit mio_complex = *static_cast<ComplexSplit*>(matvar->data);
+#   else
     mat_complex_split_t mio_complex = *static_cast<mat_complex_split_t*>(matvar->data);
+#   endif
     bob::io::col_to_row_order_complex(mio_complex.Re, mio_complex.Im, buf.ptr(), info);
   }
   else bob::io::col_to_row_order(matvar->data, buf.ptr(), info);
@@ -249,22 +279,32 @@ void read_array (boost::shared_ptr<mat_t> file, bob::core::array::interface& buf
 
 }
 
-void write_array(boost::shared_ptr<mat_t> file, const std::string& varname, const bob::core::array::interface& buf) {
+void write_array(boost::shared_ptr<mat_t> file,
+    const std::string& varname, const bob::core::array::interface& buf) {
+
   boost::shared_ptr<matvar_t> matvar = make_matvar(varname, buf);
+# if MATIO_1_3_OR_OLDER == 1
+  Mat_VarWrite(file.get(), matvar.get(), 0);
+# else
   Mat_VarWrite(file.get(), matvar.get(), (matio_compression)0);
+# endif
+
 }
 
 /**
- * Given a matvar_t object, returns our equivalent bob::core::array::typeinfo
- * struct.
+ * Given a matvar_t object, returns our equivalent bob::core::array::typeinfo struct.
  */
 static void get_var_info(boost::shared_ptr<const matvar_t> matvar,
     bob::core::array::typeinfo& info) {
   info.set(bob_element_type(matvar->data_type, matvar->isComplex),
-      (size_t)matvar->rank, matvar->dims); }
+#     if MATIO_1_3_OR_OLDER == 1
+      matvar->rank, matvar->dims);
+#     else
+      (size_t)matvar->rank, matvar->dims);
+#     endif
+}
 
-void mat_peek(const std::string& filename, bob::core::array::typeinfo& info,
-    const std::string& varname) {
+void mat_peek(const std::string& filename, bob::core::array::typeinfo& info, const std::string& varname) {
 
   boost::shared_ptr<mat_t> mat = make_matfile(filename, MAT_ACC_RDONLY);
   if (!mat) {
