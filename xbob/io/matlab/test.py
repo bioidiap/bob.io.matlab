@@ -16,6 +16,8 @@ import nose.tools
 from xbob.io.base import load, test_utils
 from xbob.io.base.test_file import transcode, array_readwrite, arrayset_readwrite
 
+from . import read_varnames, read_matrix
+
 def test_all():
 
   # array writing tests
@@ -60,3 +62,20 @@ def test_all():
 def test_mat_file_io_does_not_crash():
 
   data = load(test_utils.datafile('test_cell.mat', __name__))
+
+def test_interface():
+
+  # test that we can read the 'x' variable in the test file
+  cell_file = test_utils.datafile('test_2d.mat', __name__)
+  sorted(['x', 'y']) == sorted(read_varnames(cell_file))
+
+  # read x matrix
+  x = read_matrix(cell_file, 'x')
+  assert x.shape == (2,3)
+  y = read_matrix(cell_file, 'y')
+  assert y.shape == (3,2)
+
+  for i in range(2):
+    for j in range(3):
+      assert x[i,j] == float(j*2+i+1)
+      assert y[j,i] == float(j*2+i+1)

@@ -20,11 +20,11 @@
 #define MATIO_1_3_OR_OLDER 1
 #endif
 
-boost::shared_ptr<mat_t> make_matfile(const std::string& filename, int flags) {
-  if ((flags == MAT_ACC_RDWR) && !boost::filesystem::exists(filename.c_str())) {
-    return boost::shared_ptr<mat_t>(Mat_Create(filename.c_str(), 0), std::ptr_fun(Mat_Close));
+boost::shared_ptr<mat_t> make_matfile(const char* filename, int flags) {
+  if ((flags == MAT_ACC_RDWR) && !boost::filesystem::exists(filename)) {
+    return boost::shared_ptr<mat_t>(Mat_Create(filename, 0), std::ptr_fun(Mat_Close));
   }
-  return boost::shared_ptr<mat_t>(Mat_Open(filename.c_str(), flags), std::ptr_fun(Mat_Close));
+  return boost::shared_ptr<mat_t>(Mat_Open(filename, flags), std::ptr_fun(Mat_Close));
 }
 
 /**
@@ -53,12 +53,12 @@ make_matvar_info(boost::shared_ptr<mat_t>& file) {
 }
 
 static boost::shared_ptr<matvar_t> make_matvar(boost::shared_ptr<mat_t>& file,
-   const std::string& varname) {
+   const char* varname) {
 
-  if (!varname.size()) {
+  if (!varname) {
     throw std::runtime_error("empty variable name - cannot lookup the file this way");
   }
-  return boost::shared_ptr<matvar_t>(Mat_VarRead(file.get(), const_cast<char*>(varname.c_str())), std::ptr_fun(Mat_VarFree));
+  return boost::shared_ptr<matvar_t>(Mat_VarRead(file.get(), const_cast<char*>(varname)), std::ptr_fun(Mat_VarFree));
 
 }
 
@@ -193,7 +193,7 @@ static bob::core::array::ElementType bob_element_type (int mio_type, bool is_com
 }
 
 boost::shared_ptr<matvar_t> make_matvar
-(const std::string& varname, const bob::core::array::interface& buf) {
+(const char* varname, const bob::core::array::interface& buf) {
 
   const bob::core::array::typeinfo& info = buf.type();
   void* fdata = static_cast<void*>(new char[info.buffer_size()]);
@@ -220,7 +220,7 @@ boost::shared_ptr<matvar_t> make_matvar
 #       else
         mat_complex_split_t mio_complex = {real, imag};
 #       endif
-        return boost::shared_ptr<matvar_t>(Mat_VarCreate(varname.c_str(),
+        return boost::shared_ptr<matvar_t>(Mat_VarCreate(varname,
               mio_class_type(info.dtype), mio_data_type(info.dtype),
               info.nd, mio_dims, static_cast<void*>(&mio_complex),
               MAT_F_COMPLEX),
@@ -232,7 +232,7 @@ boost::shared_ptr<matvar_t> make_matvar
 
   bob::io::row_to_col_order(buf.ptr(), fdata, info); ///< data copying!
 
-  return boost::shared_ptr<matvar_t>(Mat_VarCreate(varname.c_str(),
+  return boost::shared_ptr<matvar_t>(Mat_VarCreate(varname,
         mio_class_type(info.dtype), mio_data_type(info.dtype),
         info.nd, mio_dims, fdata, 0), std::ptr_fun(Mat_VarFree));
 }
@@ -265,10 +265,10 @@ static void assign_array (boost::shared_ptr<matvar_t> matvar, bob::core::array::
 }
 
 void read_array (boost::shared_ptr<mat_t> file, bob::core::array::interface& buf,
-    const std::string& varname) {
+    const char* varname) {
 
   boost::shared_ptr<matvar_t> matvar;
-  if (varname.size()) matvar = make_matvar(file, varname);
+  if (varname) matvar = make_matvar(file, varname);
   else matvar = make_matvar(file);
   if (!matvar) {
     boost::format m("mat file variable could not be created - error while reading object `%s'");
@@ -280,7 +280,7 @@ void read_array (boost::shared_ptr<mat_t> file, bob::core::array::interface& buf
 }
 
 void write_array(boost::shared_ptr<mat_t> file,
-    const std::string& varname, const bob::core::array::interface& buf) {
+    const char* varname, const bob::core::array::interface& buf) {
 
   boost::shared_ptr<matvar_t> matvar = make_matvar(varname, buf);
 # if MATIO_1_3_OR_OLDER == 1
@@ -304,7 +304,7 @@ static void get_var_info(boost::shared_ptr<const matvar_t> matvar,
 #     endif
 }
 
-void mat_peek(const std::string& filename, bob::core::array::typeinfo& info, const std::string& varname) {
+void mat_peek(const char* filename, bob::core::array::typeinfo& info, const char* varname) {
 
   boost::shared_ptr<mat_t> mat = make_matfile(filename, MAT_ACC_RDONLY);
   if (!mat) {
@@ -312,10 +312,10 @@ void mat_peek(const std::string& filename, bob::core::array::typeinfo& info, con
     m % filename;
     throw std::runtime_error(m.str());
   }
-  boost::shared_ptr<matvar_t> matvar = varname.size() ? make_matvar(mat,varname) : make_matvar(mat); //gets the given variable name
+  boost::shared_ptr<matvar_t> matvar = varname ? make_matvar(mat,varname) : make_matvar(mat); //gets the given variable name
   if (!matvar) {
-    if (varname.size()){
-      boost::format m("Cannot find `%s' in file '%s'");
+    if (varname){
+      boost::format m("Cannot locate variable `%s' in file '%s'");
       m % varname % filename;
       throw std::runtime_error(m.str());
     }else{
@@ -328,17 +328,17 @@ void mat_peek(const std::string& filename, bob::core::array::typeinfo& info, con
 
 }
 
-void mat_peek_set(const std::string& filename, bob::core::array::typeinfo& info, const std::string& varname) {
+void mat_peek_set(const char* filename, bob::core::array::typeinfo& info, const char* varname) {
   boost::shared_ptr<mat_t> mat = make_matfile(filename, MAT_ACC_RDONLY);
   if (!mat) {
     boost::format m("cannot open file `%s'");
     m % filename;
     throw std::runtime_error(m.str());
   }
-  boost::shared_ptr<matvar_t> matvar = varname.size() ? make_matvar(mat,varname) : make_matvar(mat); //gets the first var.
+  boost::shared_ptr<matvar_t> matvar = varname ? make_matvar(mat,varname) : make_matvar(mat); //gets the first var.
   if (!matvar) {
-    if (varname.size()){
-      boost::format m("Cannot find `%s' in file '%s'");
+    if (varname){
+      boost::format m("Cannot locate variable `%s' in file '%s'");
       m % varname % filename;
       throw std::runtime_error(m.str());
     }else{
@@ -351,7 +351,7 @@ void mat_peek_set(const std::string& filename, bob::core::array::typeinfo& info,
 }
 
 boost::shared_ptr<std::map<size_t, std::pair<std::string, bob::core::array::typeinfo> > >
-list_variables(const std::string& filename) {
+list_variables(const char* filename) {
 
   boost::shared_ptr<std::map<size_t, std::pair<std::string, bob::core::array::typeinfo> > > retval(new std::map<size_t, std::pair<std::string, bob::core::array::typeinfo> >());
 

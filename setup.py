@@ -50,6 +50,7 @@ setup(
         ),
       Extension("xbob.io.matlab._library",
         [
+          "xbob/io/matlab/bobskin.cpp",
           "xbob/io/matlab/utils.cpp",
           "xbob/io/matlab/file.cpp",
           "xbob/io/matlab/main.cpp",

@@ -38,7 +38,7 @@ class MatFile: public bob::io::File {
 
     void try_reload_map () {
       if (boost::filesystem::exists(m_filename)) {
-        m_map = list_variables(m_filename);
+        m_map = list_variables(m_filename.c_str());
         m_type = m_map->begin()->second.second;
         m_size = m_map->size();
         m_id.reserve(m_size);
@@ -88,8 +88,7 @@ class MatFile: public bob::io::File {
       if (!m_type.is_valid()) try_reload_map();
 
       //now open it for reading
-      boost::shared_ptr<mat_t> mat =
-        make_matfile(m_filename, m_mode);
+      boost::shared_ptr<mat_t> mat = make_matfile(m_filename.c_str(), m_mode);
 
       if (!mat) {
         boost::format f("uninitialized matlab file (%s) cannot be read");
@@ -107,8 +106,7 @@ class MatFile: public bob::io::File {
       if (!m_type.is_valid()) try_reload_map();
 
       //now open it for reading
-      boost::shared_ptr<mat_t> mat =
-        make_matfile(m_filename, m_mode);
+      boost::shared_ptr<mat_t> mat = make_matfile(m_filename.c_str(), m_mode);
 
       if (!mat) {
         boost::format f("uninitialized matlab file (%s) cannot be read");
@@ -116,7 +114,7 @@ class MatFile: public bob::io::File {
         throw std::runtime_error(f.str());
       }
 
-      read_array(mat, buffer, (*m_map)[m_id[index]].first);
+      read_array(mat, buffer, (*m_map)[m_id[index]].first.c_str());
 
     }
 
@@ -127,7 +125,7 @@ class MatFile: public bob::io::File {
 
       //now open it for writing.
       boost::shared_ptr<mat_t> mat =
-        make_matfile(m_filename, m_mode);
+        make_matfile(m_filename.c_str(), m_mode);
 
       if (!mat) {
         boost::format f("cannot open matlab file at '%s' for writing");
@@ -150,7 +148,7 @@ class MatFile: public bob::io::File {
       std::ostringstream varname("array_");
       varname << next_index;
 
-      write_array(mat, varname.str(), buffer);
+      write_array(mat, varname.str().c_str(), buffer);
 
       mat.reset(); ///< force data flushing
 
@@ -167,13 +165,13 @@ class MatFile: public bob::io::File {
 
     virtual void write (const bob::core::array::interface& buffer) {
 
-      static std::string varname("array");
+      static const char* varname = "array";
 
       //this file is supposed to hold a single array. delete it if it exists
       boost::filesystem::path path (m_filename);
       if (boost::filesystem::exists(m_filename)) boost::filesystem::remove(m_filename);
 
-      boost::shared_ptr<mat_t> mat = make_matfile(m_filename,
+      boost::shared_ptr<mat_t> mat = make_matfile(m_filename.c_str(),
           m_mode);
       if (!mat) {
         boost::format f("cannot open matlab file at '%s' for writing");

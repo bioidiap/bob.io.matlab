@@ -1,4 +1,4 @@
-from . import _library
+from ._library import *
 from . import version
 from .version import module as __version__
 
