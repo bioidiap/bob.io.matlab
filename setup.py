@@ -10,7 +10,7 @@ import xbob.io.base
 
 include_dirs = [xbob.io.base.get_include()]
 
-packages = ['bob-io >= 2.0.0a2', 'matio >= 1.3.0']
+packages = ['boost', 'bob-io >= 2.0.0a2', 'matio >= 1.3.0']
 version = '2.0.0a0'
 
 setup(
@@ -56,6 +56,7 @@ setup(
           "xbob/io/matlab/main.cpp",
           ],
         packages = packages,
+        boost_modules = ['system'],
         include_dirs = include_dirs,
         version = version,
         ),
