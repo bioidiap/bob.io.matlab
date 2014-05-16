@@ -18,14 +18,42 @@
 ===================================
 
 This package contains no bindings. By importing it, you activate a transparent
-plugin that makes possible reading and writing to Matlab(R) files using
-:py:mod:`xbob.io.base` functionality.
+plugin that makes possible to read and write to Matlab(R) files using
+``xbob.io.base`` functions.
 
 Installation
 ------------
 
 Install it through normal means, via PyPI or use ``zc.buildout`` to bootstrap
 the package and run test units.
+
+External Library Requirements
+=============================
+
+To properly install this package, you will need the following C/C++ components
+pre-installed:
+
+1. ``bob-io >= 2.0.0a2``
+2. ``matio >= 1.3.0`` (`matio`_ is a C library for handling ``.mat`` files)
+
+To test for the availability of the libraries listed above, use the command
+``pkg-config``::
+
+  $ pkg-config --modversion matio
+  1.3.3
+  $ pkg-config --modversion bob-io
+  2.0.0a3
+
+If any of the components is not installed on paths accessible by
+``pkg-config``, you have two options:
+
+1. Set the environment variable ``PKG_CONFIG_PATH`` so that ``.pc`` files for
+   each of those distributions can be properly located (see ``man pkg-config``
+   for details);
+
+2. If you are using ``zc.buildout`` to setup your working environment, you can
+   use the buildout variable ``prefixes`` to define the path to the
+   installation area for your external packages.
 
 Documentation
 -------------
@@ -43,11 +71,12 @@ Usage
 
 In order to enable support for Matlab(R) file reading and writing in your
 application, make sure to import this module, before calling
-:py:func:`xbob.io.base.open` or similar::
+``xbob.io.base.load`` or similar::
 
     >>> import xbob.io.base
     >>> import xbob.io.matlab
-    >>> xbob.io.base.open('myfile.mat', 'r')
+    >>> xbob.io.base.load('myfile.mat')
+    [...]
 
 Testing
 -------
@@ -87,3 +116,6 @@ configuration found on the root of the package::
 
 Tweak the options in ``buildout.cfg`` to disable/enable verbosity and debug
 builds.
+
+.. Place here references to all citations in lower case
+.. _matio: http://matio.sourceforge.net
