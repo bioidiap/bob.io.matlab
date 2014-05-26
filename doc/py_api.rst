@@ -7,7 +7,7 @@
 ============
 
 This section includes information for using the pure Python API of
-``xbob.io.matlab``.
+``bob.io.matlab``.
 
-.. automodule:: xbob.io.matlab
+.. automodule:: bob.io.matlab
 

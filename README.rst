@@ -2,16 +2,16 @@
 .. Andre Anjos <andre.anjos@idiap.ch>
 .. Thu 29 Aug 2013 16:07:57 CEST
 
-.. image:: https://travis-ci.org/bioidiap/xbob.io.matlab.svg?branch=master
-   :target: https://travis-ci.org/bioidiap/xbob.io.matlab
-.. image:: https://coveralls.io/repos/bioidiap/xbob.io.matlab/badge.png
-   :target: https://coveralls.io/r/bioidiap/xbob.io.matlab
-.. image:: http://img.shields.io/github/tag/bioidiap/xbob.io.matlab.png
-   :target: https://github.com/bioidiap/xbob.io.matlab
-.. image:: http://img.shields.io/pypi/v/xbob.io.matlab.png
-   :target: https://pypi.python.org/pypi/xbob.io.matlab
-.. image:: http://img.shields.io/pypi/dm/xbob.io.matlab.png
-   :target: https://pypi.python.org/pypi/xbob.io.matlab
+.. image:: https://travis-ci.org/bioidiap/bob.io.matlab.svg?branch=master
+   :target: https://travis-ci.org/bioidiap/bob.io.matlab
+.. image:: https://coveralls.io/repos/bioidiap/bob.io.matlab/badge.png
+   :target: https://coveralls.io/r/bioidiap/bob.io.matlab
+.. image:: http://img.shields.io/github/tag/bioidiap/bob.io.matlab.png
+   :target: https://github.com/bioidiap/bob.io.matlab
+.. image:: http://img.shields.io/pypi/v/bob.io.matlab.png
+   :target: https://pypi.python.org/pypi/bob.io.matlab
+.. image:: http://img.shields.io/pypi/dm/bob.io.matlab.png
+   :target: https://pypi.python.org/pypi/bob.io.matlab
 
 ===================================
  Support for Matlab I/O in bob::io
@@ -19,7 +19,7 @@
 
 This package contains no bindings. By importing it, you activate a transparent
 plugin that makes possible to read and write to Matlab(R) files using
-``xbob.io.base`` functions.
+``bob.io.base`` functions.
 
 Installation
 ------------
@@ -71,11 +71,11 @@ Usage
 
 In order to enable support for Matlab(R) file reading and writing in your
 application, make sure to import this module, before calling
-``xbob.io.base.load`` or similar::
+``bob.io.base.load`` or similar::
 
-    >>> import xbob.io.base
-    >>> import xbob.io.matlab
-    >>> xbob.io.base.load('myfile.mat')
+    >>> import bob.io.base
+    >>> import bob.io.matlab
+    >>> bob.io.base.load('myfile.mat')
     [...]
 
 Testing
@@ -83,7 +83,7 @@ Testing
 
 You can run a set of tests using the nose test runner::
 
-  $ nosetests -sv xbob.io.matlab
+  $ nosetests -sv bob.io.matlab
 
 .. warning::
 
@@ -100,7 +100,7 @@ You can run our documentation tests using sphinx itself::
 
 You can test overall test coverage with::
 
-  $ nosetests --with-coverage --cover-package=xbob.io.matlab
+  $ nosetests --with-coverage --cover-package=bob.io.matlab
 
 The ``coverage`` egg must be installed for this to work properly.
 

@@ -4,21 +4,21 @@
 # Mon 16 Apr 08:18:08 2012 CEST
 
 from setuptools import setup, find_packages, dist
-dist.Distribution(dict(setup_requires=['xbob.blitz', 'xbob.io.base']))
-from xbob.blitz.extension import Extension
-import xbob.io.base
+dist.Distribution(dict(setup_requires=['bob.blitz', 'bob.io.base']))
+from bob.blitz.extension import Extension
+import bob.io.base
 
-include_dirs = [xbob.io.base.get_include()]
+include_dirs = [bob.io.base.get_include()]
 
 packages = ['boost', 'bob-io >= 2.0.0a2', 'matio >= 1.3.0']
 version = '2.0.0a0'
 
 setup(
 
-    name='xbob.io.matlab',
+    name='bob.io.matlab',
     version=version,
-    description='Enable xbob.io.base to handle Matlab(R) files',
-    url='http://github.com/bioidiap/xbob.io.matlab',
+    description='Enable bob.io.base to handle Matlab(R) files',
+    url='http://github.com/bioidiap/bob.io.matlab',
     license='BSD',
     author='Andre Anjos',
     author_email='andre.anjos@idiap.ch',
@@ -30,31 +30,31 @@ setup(
 
     install_requires=[
       'setuptools',
-      'xbob.blitz',
-      'xbob.io.base',
+      'bob.blitz',
+      'bob.io.base',
     ],
 
     namespace_packages=[
-      "xbob",
-      "xbob.io",
+      "bob",
+      "bob.io",
       ],
 
     ext_modules = [
-      Extension("xbob.io.matlab.version",
+      Extension("bob.io.matlab.version",
         [
-          "xbob/io/matlab/version.cpp",
+          "bob/io/matlab/version.cpp",
           ],
         packages = packages,
         boost_modules = ['system'],
         include_dirs = include_dirs,
         version = version,
         ),
-      Extension("xbob.io.matlab._library",
+      Extension("bob.io.matlab._library",
         [
-          "xbob/io/matlab/bobskin.cpp",
-          "xbob/io/matlab/utils.cpp",
-          "xbob/io/matlab/file.cpp",
-          "xbob/io/matlab/main.cpp",
+          "bob/io/matlab/bobskin.cpp",
+          "bob/io/matlab/utils.cpp",
+          "bob/io/matlab/file.cpp",
+          "bob/io/matlab/main.cpp",
           ],
         packages = packages,
         include_dirs = include_dirs,
