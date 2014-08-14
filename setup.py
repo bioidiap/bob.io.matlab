@@ -4,13 +4,10 @@
 # Mon 16 Apr 08:18:08 2012 CEST
 
 from setuptools import setup, find_packages, dist
-dist.Distribution(dict(setup_requires=['bob.blitz', 'bob.io.base']))
+dist.Distribution(dict(setup_requires=['bob.blitz', 'bob.core', 'bob.io.base']))
 from bob.blitz.extension import Extension
-import bob.io.base
 
-include_dirs = [bob.io.base.get_include()]
-
-packages = ['boost', 'bob-io >= 2.0.0a2', 'matio >= 1.3.0']
+packages = ['boost', 'matio >= 1.3.0']
 version = '2.0.0a0'
 
 setup(
@@ -47,7 +44,7 @@ setup(
           ],
         packages = packages,
         boost_modules = ['system'],
-        include_dirs = include_dirs,
+        bob_packages = ['bob.core', 'bob.io.base'],
         version = version,
         ),
       Extension("bob.io.matlab._library",
@@ -58,7 +55,7 @@ setup(
           "bob/io/matlab/main.cpp",
           ],
         packages = packages,
-        include_dirs = include_dirs,
+        bob_packages = ['bob.core', 'bob.io.base'],
         version = version,
         ),
       ],

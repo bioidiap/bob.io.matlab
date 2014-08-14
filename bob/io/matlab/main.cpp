@@ -2,7 +2,7 @@
  * @author Andre Anjos <andre.anjos@idiap.ch>
  * @date Wed 16 Oct 17:40:24 2013
  *
- * @brief Pythonic bindings to C++ constructs on bob.core
+ * @brief Pythonic bindings to C++ constructs on bob.io::base
  */
 
 #ifdef NO_IMPORT_ARRAY
@@ -108,7 +108,7 @@ PyObject* PyBobIoMatlab_ReadMatrix(PyObject*, PyObject* args, PyObject* kwds) {
 
   try {
     // get type of data
-    bob::core::array::typeinfo info;
+    bob::io::base::array::typeinfo info;
     mat_peek(c_filename, info, varname);
 
     npy_intp shape[NPY_MAXDIMS];

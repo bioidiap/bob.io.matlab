@@ -21,14 +21,14 @@
  * an array_read() is issued. What we do, presently, is just to read the first
  * variable.
  */
-class MatFile: public bob::io::File {
+class MatFile: public bob::io::base::File {
 
   public: //api
 
     MatFile(const char* path, char mode):
       m_filename(path),
       m_mode( (mode=='r')? MAT_ACC_RDONLY : MAT_ACC_RDWR ),
-      m_map(new std::map<size_t, std::pair<std::string, bob::core::array::typeinfo> >()),
+      m_map(new std::map<size_t, std::pair<std::string, bob::io::base::array::typeinfo> >()),
       m_size(0) {
         if (mode == 'r' || mode == 'a') try_reload_map();
         if (mode == 'w' && boost::filesystem::exists(path)) boost::filesystem::remove(path);
@@ -54,7 +54,7 @@ class MatFile: public bob::io::File {
           m % m_filename % m_type.nd % BOB_MAX_DIM;
           throw std::runtime_error(m.str());
         }
-        if (m_type.dtype == bob::core::array::t_unknown) {
+        if (m_type.dtype == bob::io::base::array::t_unknown) {
           boost::format m("unsupported data type while loading matlab file `%s': %s");
           m % m_filename % m_type.str();
           throw std::runtime_error(m.str());
@@ -66,11 +66,11 @@ class MatFile: public bob::io::File {
       return m_filename.c_str();
     }
 
-    virtual const bob::core::array::typeinfo& type_all () const {
+    virtual const bob::io::base::array::typeinfo& type_all () const {
       return m_type;
     }
 
-    virtual const bob::core::array::typeinfo& type () const {
+    virtual const bob::io::base::array::typeinfo& type () const {
       return m_type;
     }
 
@@ -82,7 +82,7 @@ class MatFile: public bob::io::File {
       return s_codecname.c_str();
     }
 
-    virtual void read_all(bob::core::array::interface& buffer) {
+    virtual void read_all(bob::io::base::array::interface& buffer) {
 
       //do we need to reload the file?
       if (!m_type.is_valid()) try_reload_map();
@@ -100,7 +100,7 @@ class MatFile: public bob::io::File {
 
     }
 
-    virtual void read(bob::core::array::interface& buffer, size_t index) {
+    virtual void read(bob::io::base::array::interface& buffer, size_t index) {
 
       //do we need to reload the file?
       if (!m_type.is_valid()) try_reload_map();
@@ -118,7 +118,7 @@ class MatFile: public bob::io::File {
 
     }
 
-    virtual size_t append (const bob::core::array::interface& buffer) {
+    virtual size_t append (const bob::io::base::array::interface& buffer) {
 
       //do we need to reload the file?
       if (!m_type.is_valid()) try_reload_map();
@@ -163,7 +163,7 @@ class MatFile: public bob::io::File {
       return m_size-1;
     }
 
-    virtual void write (const bob::core::array::interface& buffer) {
+    virtual void write (const bob::io::base::array::interface& buffer) {
 
       static const char* varname = "array";
 
@@ -192,12 +192,12 @@ class MatFile: public bob::io::File {
 
   private: //representation
 
-    typedef std::map<size_t, std::pair<std::string, bob::core::array::typeinfo> > map_type;
+    typedef std::map<size_t, std::pair<std::string, bob::io::base::array::typeinfo> > map_type;
 
     std::string m_filename;
     enum mat_acc m_mode;
     boost::shared_ptr<map_type> m_map;
-    bob::core::array::typeinfo m_type;
+    bob::io::base::array::typeinfo m_type;
     size_t       m_size;
     std::vector<size_t> m_id;
 
@@ -227,6 +227,6 @@ std::string MatFile::s_codecname = "bob.matlab";
  *
  * @note: This method can be static.
  */
-boost::shared_ptr<bob::io::File> make_file (const char* path, char mode) {
+boost::shared_ptr<bob::io::base::File> make_file (const char* path, char mode) {
   return boost::make_shared<MatFile>(path, mode);
 }

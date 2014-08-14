@@ -15,7 +15,7 @@
 #include <boost/shared_ptr.hpp>
 #include <matio.h>
 
-#include <bob/core/array.h>
+#include <bob.io.base/array.h>
 
 /**
  * This method will create a new boost::shared_ptr to mat_t that knows how to
@@ -26,14 +26,14 @@ boost::shared_ptr<mat_t> make_matfile(const char* filename, int flags);
 /**
  * Retrieves information about the first variable found on a file.
  */
-void mat_peek(const char* filename, bob::core::array::typeinfo& info,
+void mat_peek(const char* filename, bob::io::base::array::typeinfo& info,
     const char* varname=0);
 
 /**
  * Retrieves information about the first variable with a certain name
  * (array_%d) that exists in a .mat file (if it exists)
  */
-void mat_peek_set(const char* filename, bob::core::array::typeinfo& info,
+void mat_peek_set(const char* filename, bob::io::base::array::typeinfo& info,
     const char* varname=0);
 
 /**
@@ -41,7 +41,7 @@ void mat_peek_set(const char* filename, bob::core::array::typeinfo& info,
  * that exist in a .mat file
  */
 boost::shared_ptr<std::map<size_t, std::pair<std::string,
-  bob::core::array::typeinfo> > > list_variables(const char* filename);
+  bob::io::base::array::typeinfo> > > list_variables(const char* filename);
 
 /**
  * Reads a variable on the (already opened) mat_t file. If you don't
@@ -49,12 +49,12 @@ boost::shared_ptr<std::map<size_t, std::pair<std::string,
  * buffer if required.
  */
 void read_array (boost::shared_ptr<mat_t> file,
-    bob::core::array::interface& buf, const char* varname=0);
+    bob::io::base::array::interface& buf, const char* varname=0);
 
 /**
  * Appends a single Array into the given matlab file and with a given name
  */
 void write_array(boost::shared_ptr<mat_t> file, const char* varname,
-    const bob::core::array::interface& buf);
+    const bob::io::base::array::interface& buf);
 
 #endif /* BOB_IO_MATLAB_UTILS_H */

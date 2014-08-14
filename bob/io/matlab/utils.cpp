@@ -12,7 +12,7 @@
 
 #include <boost/format.hpp>
 #include <boost/filesystem.hpp>
-#include <bob/io/reorder.h>
+#include <bob.io.base/reorder.h>
 
 #if MATIO_MAJOR_VERSION > 1 || (MATIO_MAJOR_VERSION == 1 && MATIO_MINOR_VERSION > 3)
 #define MATIO_1_3_OR_OLDER 0
@@ -65,36 +65,36 @@ static boost::shared_ptr<matvar_t> make_matvar(boost::shared_ptr<mat_t>& file,
 /**
  * Returns the MAT_C_* enumeration for the given ElementType
  */
-static enum matio_classes mio_class_type (bob::core::array::ElementType i) {
+static enum matio_classes mio_class_type (bob::io::base::array::ElementType i) {
   switch (i) {
-    case bob::core::array::t_int8:
+    case bob::io::base::array::t_int8:
       return MAT_C_INT8;
-    case bob::core::array::t_int16:
+    case bob::io::base::array::t_int16:
       return MAT_C_INT16;
-    case bob::core::array::t_int32:
+    case bob::io::base::array::t_int32:
       return MAT_C_INT32;
-    case bob::core::array::t_int64:
+    case bob::io::base::array::t_int64:
       return MAT_C_INT64;
-    case bob::core::array::t_uint8:
+    case bob::io::base::array::t_uint8:
       return MAT_C_UINT8;
-    case bob::core::array::t_uint16:
+    case bob::io::base::array::t_uint16:
       return MAT_C_UINT16;
-    case bob::core::array::t_uint32:
+    case bob::io::base::array::t_uint32:
       return MAT_C_UINT32;
-    case bob::core::array::t_uint64:
+    case bob::io::base::array::t_uint64:
       return MAT_C_UINT64;
-    case bob::core::array::t_float32:
+    case bob::io::base::array::t_float32:
       return MAT_C_SINGLE;
-    case bob::core::array::t_complex64:
+    case bob::io::base::array::t_complex64:
       return MAT_C_SINGLE;
-    case bob::core::array::t_float64:
+    case bob::io::base::array::t_float64:
       return MAT_C_DOUBLE;
-    case bob::core::array::t_complex128:
+    case bob::io::base::array::t_complex128:
       return MAT_C_DOUBLE;
     default:
       {
         boost::format f("data type '%s' is not supported by matio backend");
-        f % bob::core::array::stringize(i);
+        f % bob::io::base::array::stringize(i);
         throw std::runtime_error(f.str());
       }
   }
@@ -103,36 +103,36 @@ static enum matio_classes mio_class_type (bob::core::array::ElementType i) {
 /**
  * Returns the MAT_T_* enumeration for the given ElementType
  */
-static enum matio_types mio_data_type (bob::core::array::ElementType i) {
+static enum matio_types mio_data_type (bob::io::base::array::ElementType i) {
   switch (i) {
-    case bob::core::array::t_int8:
+    case bob::io::base::array::t_int8:
       return MAT_T_INT8;
-    case bob::core::array::t_int16:
+    case bob::io::base::array::t_int16:
       return MAT_T_INT16;
-    case bob::core::array::t_int32:
+    case bob::io::base::array::t_int32:
       return MAT_T_INT32;
-    case bob::core::array::t_int64:
+    case bob::io::base::array::t_int64:
       return MAT_T_INT64;
-    case bob::core::array::t_uint8:
+    case bob::io::base::array::t_uint8:
       return MAT_T_UINT8;
-    case bob::core::array::t_uint16:
+    case bob::io::base::array::t_uint16:
       return MAT_T_UINT16;
-    case bob::core::array::t_uint32:
+    case bob::io::base::array::t_uint32:
       return MAT_T_UINT32;
-    case bob::core::array::t_uint64:
+    case bob::io::base::array::t_uint64:
       return MAT_T_UINT64;
-    case bob::core::array::t_float32:
+    case bob::io::base::array::t_float32:
       return MAT_T_SINGLE;
-    case bob::core::array::t_complex64:
+    case bob::io::base::array::t_complex64:
       return MAT_T_SINGLE;
-    case bob::core::array::t_float64:
+    case bob::io::base::array::t_float64:
       return MAT_T_DOUBLE;
-    case bob::core::array::t_complex128:
+    case bob::io::base::array::t_complex128:
       return MAT_T_DOUBLE;
     default:
       {
         boost::format f("data type '%s' is not supported by matio backend");
-        f % bob::core::array::stringize(i);
+        f % bob::io::base::array::stringize(i);
         throw std::runtime_error(f.str());
       }
   }
@@ -142,60 +142,60 @@ static enum matio_types mio_data_type (bob::core::array::ElementType i) {
  * Returns the ElementType given the matio MAT_T_* enum and a flag indicating
  * if the array is complex or not (also returned by matio at matvar_t)
  */
-static bob::core::array::ElementType bob_element_type (int mio_type, bool is_complex) {
+static bob::io::base::array::ElementType bob_element_type (int mio_type, bool is_complex) {
 
-  bob::core::array::ElementType eltype = bob::core::array::t_unknown;
+  bob::io::base::array::ElementType eltype = bob::io::base::array::t_unknown;
 
   switch(mio_type) {
 
     case(MAT_T_INT8):
-      eltype = bob::core::array::t_int8;
+      eltype = bob::io::base::array::t_int8;
       break;
     case(MAT_T_INT16):
-      eltype = bob::core::array::t_int16;
+      eltype = bob::io::base::array::t_int16;
       break;
     case(MAT_T_INT32):
-      eltype = bob::core::array::t_int32;
+      eltype = bob::io::base::array::t_int32;
       break;
     case(MAT_T_INT64):
-      eltype = bob::core::array::t_int64;
+      eltype = bob::io::base::array::t_int64;
       break;
     case(MAT_T_UINT8):
-      eltype = bob::core::array::t_uint8;
+      eltype = bob::io::base::array::t_uint8;
       break;
     case(MAT_T_UINT16):
-      eltype = bob::core::array::t_uint16;
+      eltype = bob::io::base::array::t_uint16;
       break;
     case(MAT_T_UINT32):
-      eltype = bob::core::array::t_uint32;
+      eltype = bob::io::base::array::t_uint32;
       break;
     case(MAT_T_UINT64):
-      eltype = bob::core::array::t_uint64;
+      eltype = bob::io::base::array::t_uint64;
       break;
     case(MAT_T_SINGLE):
-      eltype = bob::core::array::t_float32;
+      eltype = bob::io::base::array::t_float32;
       break;
     case(MAT_T_DOUBLE):
-      eltype = bob::core::array::t_float64;
+      eltype = bob::io::base::array::t_float64;
       break;
     default:
-      return bob::core::array::t_unknown;
+      return bob::io::base::array::t_unknown;
   }
 
   //if type is complex, it is signalled slightly different
   if (is_complex) {
-    if (eltype == bob::core::array::t_float32) return bob::core::array::t_complex64;
-    else if (eltype == bob::core::array::t_float64) return bob::core::array::t_complex128;
-    else return bob::core::array::t_unknown;
+    if (eltype == bob::io::base::array::t_float32) return bob::io::base::array::t_complex64;
+    else if (eltype == bob::io::base::array::t_float64) return bob::io::base::array::t_complex128;
+    else return bob::io::base::array::t_unknown;
   }
 
   return eltype;
 }
 
 boost::shared_ptr<matvar_t> make_matvar
-(const char* varname, const bob::core::array::interface& buf) {
+(const char* varname, const bob::io::base::array::interface& buf) {
 
-  const bob::core::array::typeinfo& info = buf.type();
+  const bob::io::base::array::typeinfo& info = buf.type();
   void* fdata = static_cast<void*>(new char[info.buffer_size()]);
 
   //matio gets dimensions as integers
@@ -207,14 +207,14 @@ boost::shared_ptr<matvar_t> make_matvar
   for (size_t i=0; i<info.nd; ++i) mio_dims[i] = info.shape[i];
 
   switch (info.dtype) {
-    case bob::core::array::t_complex64:
-    case bob::core::array::t_complex128:
-    case bob::core::array::t_complex256:
+    case bob::io::base::array::t_complex64:
+    case bob::io::base::array::t_complex128:
+    case bob::io::base::array::t_complex256:
       {
         //special treatment for complex arrays
         uint8_t* real = static_cast<uint8_t*>(fdata);
         uint8_t* imag = real + (info.buffer_size()/2);
-        bob::io::row_to_col_order_complex(buf.ptr(), real, imag, info);
+        bob::io::base::row_to_col_order_complex(buf.ptr(), real, imag, info);
 #       if MATIO_1_3_OR_OLDER == 1
         ComplexSplit mio_complex = {real, imag};
 #       else
@@ -230,7 +230,7 @@ boost::shared_ptr<matvar_t> make_matvar
       break;
   }
 
-  bob::io::row_to_col_order(buf.ptr(), fdata, info); ///< data copying!
+  bob::io::base::row_to_col_order(buf.ptr(), fdata, info); ///< data copying!
 
   return boost::shared_ptr<matvar_t>(Mat_VarCreate(varname,
         mio_class_type(info.dtype), mio_data_type(info.dtype),
@@ -238,12 +238,12 @@ boost::shared_ptr<matvar_t> make_matvar
 }
 
 /**
- * Assigns a single matvar variable to an bob::core::array::interface. Re-allocates the buffer
+ * Assigns a single matvar variable to an bob::io::base::array::interface. Re-allocates the buffer
  * if required.
  */
-static void assign_array (boost::shared_ptr<matvar_t> matvar, bob::core::array::interface& buf) {
+static void assign_array (boost::shared_ptr<matvar_t> matvar, bob::io::base::array::interface& buf) {
 
-  bob::core::array::typeinfo info(bob_element_type(matvar->data_type, matvar->isComplex),
+  bob::io::base::array::typeinfo info(bob_element_type(matvar->data_type, matvar->isComplex),
 #     if MATIO_1_3_OR_OLDER == 1
       matvar->rank, matvar->dims);
 #     else
@@ -258,13 +258,13 @@ static void assign_array (boost::shared_ptr<matvar_t> matvar, bob::core::array::
 #   else
     mat_complex_split_t mio_complex = *static_cast<mat_complex_split_t*>(matvar->data);
 #   endif
-    bob::io::col_to_row_order_complex(mio_complex.Re, mio_complex.Im, buf.ptr(), info);
+    bob::io::base::col_to_row_order_complex(mio_complex.Re, mio_complex.Im, buf.ptr(), info);
   }
-  else bob::io::col_to_row_order(matvar->data, buf.ptr(), info);
+  else bob::io::base::col_to_row_order(matvar->data, buf.ptr(), info);
 
 }
 
-void read_array (boost::shared_ptr<mat_t> file, bob::core::array::interface& buf,
+void read_array (boost::shared_ptr<mat_t> file, bob::io::base::array::interface& buf,
     const char* varname) {
 
   boost::shared_ptr<matvar_t> matvar;
@@ -280,7 +280,7 @@ void read_array (boost::shared_ptr<mat_t> file, bob::core::array::interface& buf
 }
 
 void write_array(boost::shared_ptr<mat_t> file,
-    const char* varname, const bob::core::array::interface& buf) {
+    const char* varname, const bob::io::base::array::interface& buf) {
 
   boost::shared_ptr<matvar_t> matvar = make_matvar(varname, buf);
 # if MATIO_1_3_OR_OLDER == 1
@@ -292,10 +292,10 @@ void write_array(boost::shared_ptr<mat_t> file,
 }
 
 /**
- * Given a matvar_t object, returns our equivalent bob::core::array::typeinfo struct.
+ * Given a matvar_t object, returns our equivalent bob::io::base::array::typeinfo struct.
  */
 static void get_var_info(boost::shared_ptr<const matvar_t> matvar,
-    bob::core::array::typeinfo& info) {
+    bob::io::base::array::typeinfo& info) {
   info.set(bob_element_type(matvar->data_type, matvar->isComplex),
 #     if MATIO_1_3_OR_OLDER == 1
       matvar->rank, matvar->dims);
@@ -304,7 +304,7 @@ static void get_var_info(boost::shared_ptr<const matvar_t> matvar,
 #     endif
 }
 
-void mat_peek(const char* filename, bob::core::array::typeinfo& info, const char* varname) {
+void mat_peek(const char* filename, bob::io::base::array::typeinfo& info, const char* varname) {
 
   boost::shared_ptr<mat_t> mat = make_matfile(filename, MAT_ACC_RDONLY);
   if (!mat) {
@@ -328,7 +328,7 @@ void mat_peek(const char* filename, bob::core::array::typeinfo& info, const char
 
 }
 
-void mat_peek_set(const char* filename, bob::core::array::typeinfo& info, const char* varname) {
+void mat_peek_set(const char* filename, bob::io::base::array::typeinfo& info, const char* varname) {
   boost::shared_ptr<mat_t> mat = make_matfile(filename, MAT_ACC_RDONLY);
   if (!mat) {
     boost::format m("cannot open file `%s'");
@@ -350,10 +350,10 @@ void mat_peek_set(const char* filename, bob::core::array::typeinfo& info, const 
   get_var_info(matvar, info);
 }
 
-boost::shared_ptr<std::map<size_t, std::pair<std::string, bob::core::array::typeinfo> > >
+boost::shared_ptr<std::map<size_t, std::pair<std::string, bob::io::base::array::typeinfo> > >
 list_variables(const char* filename) {
 
-  boost::shared_ptr<std::map<size_t, std::pair<std::string, bob::core::array::typeinfo> > > retval(new std::map<size_t, std::pair<std::string, bob::core::array::typeinfo> >());
+  boost::shared_ptr<std::map<size_t, std::pair<std::string, bob::io::base::array::typeinfo> > > retval(new std::map<size_t, std::pair<std::string, bob::io::base::array::typeinfo> >());
 
   boost::shared_ptr<mat_t> mat = make_matfile(filename, MAT_ACC_RDONLY);
   if (!mat) {
@@ -367,11 +367,11 @@ list_variables(const char* filename) {
 
   //now that we have found a variable, fill the array
   //properties taking that variable as basis
-  (*retval)[id] = std::make_pair(matvar->name, bob::core::array::typeinfo());
+  (*retval)[id] = std::make_pair(matvar->name, bob::io::base::array::typeinfo());
   get_var_info(matvar, (*retval)[id].second);
-  const bob::core::array::typeinfo& type_cache = (*retval)[id].second;
+  const bob::io::base::array::typeinfo& type_cache = (*retval)[id].second;
 
-  if ((*retval)[id].second.dtype == bob::core::array::t_unknown) {
+  if ((*retval)[id].second.dtype == bob::io::base::array::t_unknown) {
     boost::format m("unknown data type (%s) for object named `%s' at file `%s'");
     m % (*retval)[id].second.str() % id % filename;
     throw std::runtime_error(m.str());
