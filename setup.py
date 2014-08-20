@@ -10,6 +10,8 @@ dist.Distribution(dict(setup_requires=['bob.blitz'] + bob_packages))
 from bob.blitz.extension import Extension
 
 packages = ['boost', 'matio >= 1.3.0']
+boost_modules = ['system']
+
 version = '2.0.0a0'
 
 setup(
@@ -37,7 +39,7 @@ setup(
     namespace_packages=[
       "bob",
       "bob.io",
-      ],
+    ],
 
     ext_modules = [
       Extension("bob.io.matlab.version",
@@ -45,10 +47,11 @@ setup(
           "bob/io/matlab/version.cpp",
         ],
         packages = packages,
-        boost_modules = ['system'],
+        boost_modules = boost_modules,
         bob_packages = bob_packages,
         version = version,
-        ),
+      ),
+
       Extension("bob.io.matlab._library",
         [
           "bob/io/matlab/bobskin.cpp",
@@ -57,10 +60,11 @@ setup(
           "bob/io/matlab/main.cpp",
         ],
         packages = packages,
+        boost_modules = boost_modules,
         bob_packages = bob_packages,
         version = version,
-        ),
-      ],
+      ),
+    ],
 
     classifiers = [
       'Development Status :: 3 - Alpha',
@@ -71,6 +75,6 @@ setup(
       'Programming Language :: Python :: 3',
       'Topic :: Software Development :: Libraries :: Python Modules',
       'Environment :: Plugins',
-      ],
+    ],
 
-    )
+  )
