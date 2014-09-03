@@ -7,7 +7,7 @@ bob_packages = ['bob.core', 'bob.io.base']
 
 from setuptools import setup, find_packages, dist
 dist.Distribution(dict(setup_requires=['bob.blitz'] + bob_packages))
-from bob.blitz.extension import Extension
+from bob.blitz.extension import Extension, build_ext
 
 packages = ['boost', 'matio >= 1.3.0']
 boost_modules = ['system']
@@ -66,8 +66,12 @@ setup(
       ),
     ],
 
+    cmdclass = {
+      'build_ext': build_ext
+    },
+
     classifiers = [
-      'Development Status :: 3 - Alpha',
+      'Development Status :: 4 - Beta',
       'Intended Audience :: Developers',
       'License :: OSI Approved :: BSD License',
       'Natural Language :: English',
