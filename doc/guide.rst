@@ -10,14 +10,15 @@
  User Guide
 ============
 
-By importing this package, you can use |project| native array reading and
-writing routines to load and save files using the Matlab(R) ``.mat`` format.
+By importing this package, you can use |project| native array reading (:py:func:`bob.io.base.load`) and
+writing (:py:func:`bob.io.base.save`) routines to load and save files using the Matlab(R) ``.mat`` format.
 
-.. code-block:: python
+.. doctest::
+   :options: +NORMALIZE_WHITESPACE, +ELLIPSIS
 
-   >> import bob.io.base
-   >> import bob.io.matlab #under the hood: loads Bob plugin for '.mat' files
-   >> x = bob.io.base.load('myfile.mat')
+   >>> import bob.io.base
+   >>> import bob.io.matlab #under the hood: loads Bob plugin for '.mat' files
+   >>> x = bob.io.base.load('myfile.mat') # doctest: +SKIP
 
 This package also contains a couple of other methods that allow for reading
 variable names and matrices from ``.mat`` files. Proceed to the
@@ -27,13 +28,13 @@ Be Portable
 -----------
 
 An alternative for saving data in ``.mat`` files using
-:py:meth:`bob.io.base.save`, would be to save them as `HDF5`_ files which then
+:py:func:`bob.io.base.save`, would be to save them as `HDF5`_ files which then
 can be easily read inside Matlab. The `HDF5`_ format is well supported in
 Matlab(R) - as a matter of fact, the newest version of `.mat` files **uses**
 the HDF5 format.
 
 Similarly, instead of having to read ``.mat`` files using
-:py:meth:`bob.io.base.load`, you can save your Matlab data in `HDF5`_ format,
+:py:func:`bob.io.base.load`, you can save your Matlab data in `HDF5`_ format,
 which then can be easily read from |project|, without this add-on. Detailed
 instructions about how to save and load data from Matlab to and from `HDF5`_
 files can be found `here`__.
