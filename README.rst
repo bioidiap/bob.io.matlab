@@ -6,7 +6,7 @@
    :target: http://pythonhosted.org/bob.io.matlab/index.html
 .. image:: http://img.shields.io/badge/docs-latest-orange.png
    :target: https://www.idiap.ch/software/bob/docs/latest/bioidiap/bob.io.matlab/master/index.html
-.. image:: https://travis-ci.org/bioidiap/bob.io.matlab.svg?branch=v2.0.1
+.. image:: https://travis-ci.org/bioidiap/bob.io.matlab.svg?branch=master
    :target: https://travis-ci.org/bioidiap/bob.io.matlab
 .. image:: https://coveralls.io/repos/bioidiap/bob.io.matlab/badge.png
    :target: https://coveralls.io/r/bioidiap/bob.io.matlab
