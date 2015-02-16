@@ -51,8 +51,7 @@ PyObject* PyBobIoMatlab_ReadVarNames(PyObject*, PyObject* o) {
     PyTuple_SET_ITEM(retval, k, item);
   }
 
-  Py_INCREF(retval);
-  return retval;
+  return Py_BuildValue("O", retval);
 
 }
 
@@ -104,8 +103,6 @@ PyObject* PyBobIoMatlab_ReadMatrix(PyObject*, PyObject* args, PyObject* kwds) {
     return 0;
   }
 
-  PyObject* retval = 0;
-
   try {
     // get type of data
     bob::io::base::array::typeinfo info;
@@ -117,14 +114,14 @@ PyObject* PyBobIoMatlab_ReadMatrix(PyObject*, PyObject* args, PyObject* kwds) {
     int type_num = PyBobIo_AsTypenum(info.dtype);
     if (type_num == NPY_NOTYPE) return 0; ///< failure
 
-    retval = PyArray_SimpleNew(info.nd, shape, type_num);
+    PyObject* retval = PyArray_SimpleNew(info.nd, shape, type_num);
     if (!retval) return 0;
     auto retval_ = make_safe(retval);
 
     bobskin skin((PyArrayObject*)retval, info.dtype);
     read_array(matfile, skin, varname);
 
-    Py_INCREF(retval);
+    return Py_BuildValue("O", retval);
   }
   catch (std::exception& e) {
     PyErr_SetString(PyExc_RuntimeError, e.what());
@@ -134,8 +131,6 @@ PyObject* PyBobIoMatlab_ReadMatrix(PyObject*, PyObject* args, PyObject* kwds) {
     PyErr_Format(PyExc_RuntimeError, "cannot read contents of variable `%s' at matlab file `%s'", varname, c_filename);
     return 0;
   }
-
-  return retval;
 
 }
 
@@ -200,8 +195,7 @@ static PyObject* create_module (void) {
     //do not return 0, or we may crash badly
   }
 
-  Py_INCREF(m);
-  return m;
+  return Py_BuildValue("O", m);
 
 }
 

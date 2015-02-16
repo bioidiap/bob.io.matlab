@@ -196,8 +196,10 @@ boost::shared_ptr<matvar_t> make_matvar
 (const char* varname, const bob::io::base::array::interface& buf) {
 
   const bob::io::base::array::typeinfo& info = buf.type();
-  void* fdata = static_cast<void*>(new char[info.buffer_size()]);
+  char* cdata = new char[info.buffer_size()];
+  void* fdata = static_cast<void*>(cdata);
 
+  boost::shared_ptr<matvar_t> retval;
   //matio gets dimensions as integers
 # if MATIO_1_3_OR_OLDER == 1
   int mio_dims[BOB_MAX_DIM];
@@ -220,7 +222,7 @@ boost::shared_ptr<matvar_t> make_matvar
 #       else
         mat_complex_split_t mio_complex = {real, imag};
 #       endif
-        return boost::shared_ptr<matvar_t>(Mat_VarCreate(varname,
+        retval.reset(Mat_VarCreate(varname,
               mio_class_type(info.dtype), mio_data_type(info.dtype),
               info.nd, mio_dims, static_cast<void*>(&mio_complex),
               MAT_F_COMPLEX),
@@ -230,11 +232,16 @@ boost::shared_ptr<matvar_t> make_matvar
       break;
   }
 
-  bob::io::base::row_to_col_order(buf.ptr(), fdata, info); ///< data copying!
+  if (!retval){
+    bob::io::base::row_to_col_order(buf.ptr(), fdata, info); ///< data copying!
 
-  return boost::shared_ptr<matvar_t>(Mat_VarCreate(varname,
-        mio_class_type(info.dtype), mio_data_type(info.dtype),
-        info.nd, mio_dims, fdata, 0), std::ptr_fun(Mat_VarFree));
+    retval.reset(Mat_VarCreate(varname,
+          mio_class_type(info.dtype), mio_data_type(info.dtype),
+          info.nd, mio_dims, fdata, 0), std::ptr_fun(Mat_VarFree));
+  }
+
+  delete[] cdata;
+  return retval;
 }
 
 /**

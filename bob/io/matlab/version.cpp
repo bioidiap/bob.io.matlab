@@ -134,8 +134,7 @@ static PyObject* build_version_dictionary() {
   if (!dict_steal(retval, "bob.core", bob_core_version())) return 0;
   if (!dict_steal(retval, "bob.io.base", bob_io_base_version())) return 0;
 
-  Py_INCREF(retval);
-  return retval;
+  return Py_BuildValue("O", retval);
 }
 
 static PyMethodDef module_methods[] = {
@@ -185,8 +184,7 @@ static PyObject* create_module (void) {
     return 0;
   }
 
-  Py_INCREF(m);
-  return m;
+  return Py_BuildValue("O", m);
 
 }
 
