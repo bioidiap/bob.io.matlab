@@ -3,6 +3,7 @@ env:
   global:
   - secure: YO9IDBfr3MiySVQkVFKMUqsGwQrGR5YVrZVsCliODNb4zx4TnT1aP9FfBVP4jIa2VVS9427XWDcwym+9Y/umYiC2yOZKdnJqW8UeAvh0etYGce9sJz5y9gX0vmSbW1mH9ZZgs/qaBfX3im5CN+OKV9Fjz4+nTASw7q0Lf9Uu7dg=
   - secure: FcW+q9jGCE0t1hzsS8hM9ziNyByRZ3kyNkY/cBUf6xBmKI0SQlo+ZNUnFD6g7VnSymrjmHE8LpJKFTTvEfrW614xZO6AwS5LpMhVZICI9I+GZv8IkF51UIJki/3+SXEHaXnsjTqqHc6zYfLtGvAFMqAZXcH4JB7Ol5tlcZGbuQ4=
+  - BOB_UPLOAD_WHEEL=1
 matrix:
   include:
   - python: 2.6
