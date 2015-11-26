@@ -6,10 +6,10 @@
    :target: http://pythonhosted.org/bob.io.matlab/index.html
 .. image:: http://img.shields.io/badge/docs-latest-orange.png
    :target: https://www.idiap.ch/software/bob/docs/latest/bioidiap/bob.io.matlab/master/index.html
-.. image:: https://travis-ci.org/bioidiap/bob.io.matlab.svg?branch=v2.0.4
-   :target: https://travis-ci.org/bioidiap/bob.io.matlab?branch=v2.0.4
-.. image:: https://coveralls.io/repos/bioidiap/bob.io.matlab/badge.png?branch=v2.0.4
-   :target: https://coveralls.io/r/bioidiap/bob.io.matlab?branch=v2.0.4
+.. image:: https://travis-ci.org/bioidiap/bob.io.matlab.svg?branch=master
+   :target: https://travis-ci.org/bioidiap/bob.io.matlab?branch=master
+.. image:: https://coveralls.io/repos/bioidiap/bob.io.matlab/badge.png?branch=master
+   :target: https://coveralls.io/r/bioidiap/bob.io.matlab?branch=master
 .. image:: https://img.shields.io/badge/github-master-0000c0.png
    :target: https://github.com/bioidiap/bob.io.matlab/tree/master
 .. image:: http://img.shields.io/pypi/v/bob.io.matlab.png
