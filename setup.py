@@ -22,8 +22,8 @@ setup(
 
     name='bob.io.matlab',
     version=version,
-    description='Enable bob.io.base to handle Matlab(R) files',
-    url='http://github.com/bioidiap/bob.io.matlab',
+    description='Handling of Matlab(R) files via bob.io.base',
+    url='http://gitlab.idiap.ch/bob/bob.io.matlab',
     license='BSD',
     author='Andre Anjos',
     author_email='andre.anjos@idiap.ch',
@@ -36,8 +36,6 @@ setup(
 
     setup_requires = build_requires,
     install_requires = build_requires,
-
-
 
     ext_modules = [
       Extension("bob.io.matlab.version",
