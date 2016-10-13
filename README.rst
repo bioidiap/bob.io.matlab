@@ -5,8 +5,8 @@
    :target: http://pythonhosted.org/bob.io.matlab/index.html
 .. image:: http://img.shields.io/badge/docs-latest-orange.png
    :target: https://www.idiap.ch/software/bob/docs/latest/bob/bob.io.matlab/master/index.html
-.. image:: https://gitlab.idiap.ch/bob/bob.io.matlab/badges/v2.0.7/build.svg
-   :target: https://gitlab.idiap.ch/bob/bob.io.matlab/commits/v2.0.7
+.. image:: https://gitlab.idiap.ch/bob/bob.io.matlab/badges/master/build.svg
+   :target: https://gitlab.idiap.ch/bob/bob.io.matlab/commits/master
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.io.matlab
 .. image:: http://img.shields.io/pypi/v/bob.io.matlab.png
