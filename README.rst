@@ -2,9 +2,9 @@
 .. Sun 14 Aug 2016 18:02:45 CEST
 
 .. image:: http://img.shields.io/badge/docs-stable-yellow.svg
-   :target: http://pythonhosted.org/bob.io.matlab/index.html
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.io.matlab/stable/index.html
 .. image:: http://img.shields.io/badge/docs-latest-orange.svg
-   :target: https://www.idiap.ch/software/bob/docs/latest/bob/bob.io.matlab/master/index.html
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.io.matlab/master/index.html
 .. image:: https://gitlab.idiap.ch/bob/bob.io.matlab/badges/master/build.svg
    :target: https://gitlab.idiap.ch/bob/bob.io.matlab/commits/master
 .. image:: https://gitlab.idiap.ch/bob/bob.io.matlab/badges/master/coverage.svg
