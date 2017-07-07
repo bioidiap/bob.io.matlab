@@ -2,9 +2,9 @@
 .. Sun 14 Aug 2016 18:02:45 CEST
 
 .. image:: http://img.shields.io/badge/docs-stable-yellow.svg
-   :target: http://pythonhosted.org/bob.io.matlab/index.html
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.io.matlab/stable/index.html
 .. image:: http://img.shields.io/badge/docs-latest-orange.svg
-   :target: https://www.idiap.ch/software/bob/docs/latest/bob/bob.io.matlab/master/index.html
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.io.matlab/master/index.html
 .. image:: https://gitlab.idiap.ch/bob/bob.io.matlab/badges/master/build.svg
    :target: https://gitlab.idiap.ch/bob/bob.io.matlab/commits/master
 .. image:: https://gitlab.idiap.ch/bob/bob.io.matlab/badges/master/coverage.svg
@@ -12,8 +12,6 @@
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.io.matlab
 .. image:: http://img.shields.io/pypi/v/bob.io.matlab.svg
-   :target: https://pypi.python.org/pypi/bob.io.matlab
-.. image:: http://img.shields.io/pypi/dm/bob.io.matlab.svg
    :target: https://pypi.python.org/pypi/bob.io.matlab
 
 
@@ -29,7 +27,7 @@ possible to read and write to Matlab(R) files using ``bob.io.base`` functions.
 Installation
 ------------
 
-Complete Bob's `installation`_ instructions. Then, to install this pacakge,
+Complete Bob's `installation`_ instructions. Then, to install this package,
 run::
 
   $ conda install bob.io.matlab
