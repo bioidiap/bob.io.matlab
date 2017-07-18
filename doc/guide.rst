@@ -24,6 +24,11 @@ This package also contains a couple of other methods that allow for reading
 variable names and matrices from ``.mat`` files. Proceed to the
 :doc:`py_api` section for details.
 
+.. warning::
+
+   Currently, reading the ``.mat`` files with a cell inside leads to a crash.
+   You can refer to `SciPy Cookbook`_ for alternative solutions.
+
 Be Portable
 -----------
 
@@ -41,5 +46,6 @@ files can be found `here`__.
 
 .. Place here your external references
 .. include:: links.rst
+.. _SciPy Cookbook: https://scipy-cookbook.readthedocs.io/items/Reading_mat_files.html
 .. _matlab-hdf5: http://www.mathworks.ch/help/techdoc/ref/hdf5write.html
 __ matlab-hdf5_
