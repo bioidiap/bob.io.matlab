@@ -2,4 +2,4 @@ setuptools
 bob.extension
 bob.blitz
 bob.core
-bob.io.base
+bob.io.base > 2.1
