@@ -28,19 +28,11 @@ Returns the list of variable names stored in the given Matlab(R) file.\n\
 
 PyObject* PyBobIoMatlab_ReadVarNames(PyObject*, PyObject* o) {
 
-  PyObject* filename = 0;
+  const char* filename;
 
   if (!PyBobIo_FilenameConverter(o, &filename)) return 0;
 
-  auto filename_ = make_safe(filename);
-
-#if PY_VERSION_HEX >= 0x03000000
-  const char* c_filename = PyBytes_AS_STRING(filename);
-#else
-  const char* c_filename = PyString_AS_STRING(filename);
-#endif
-
-  auto list = list_variables(c_filename);
+  auto list = list_variables(filename);
   PyObject* retval = PyTuple_New(list->size());
   if (!retval) return 0;
   auto retval_ = make_safe(retval);
@@ -81,33 +73,25 @@ PyObject* PyBobIoMatlab_ReadMatrix(PyObject*, PyObject* args, PyObject* kwds) {
   static const char* const_kwlist[] = {"path", "varname", 0};
   static char** kwlist = const_cast<char**>(const_kwlist);
 
-  PyObject* filename = 0;
+  const char* filename;
   const char* varname = 0;
 
   if (!PyArg_ParseTupleAndKeywords(args, kwds, "O&|s", kwlist,
         &PyBobIo_FilenameConverter, &filename, &varname)) return 0;
 
-  auto filename_ = make_safe(filename);
-
-#if PY_VERSION_HEX >= 0x03000000
-  const char* c_filename = PyBytes_AS_STRING(filename);
-#else
-  const char* c_filename = PyString_AS_STRING(filename);
-#endif
-
   // open matlab file
-  auto matfile = make_matfile(c_filename, MAT_ACC_RDONLY);
+  auto matfile = make_matfile(filename, MAT_ACC_RDONLY);
 
   if (!matfile) {
     PyErr_Format(PyExc_RuntimeError,
-        "Could open the matlab file `%s'", c_filename);
+        "Could open the matlab file `%s'", filename);
     return 0;
   }
 
   try {
     // get type of data
     bob::io::base::array::typeinfo info;
-    mat_peek(c_filename, info, varname);
+    mat_peek(filename, info, varname);
 
     npy_intp shape[NPY_MAXDIMS];
     for (size_t k=0; k<info.nd; ++k) shape[k] = info.shape[k];
@@ -129,7 +113,7 @@ PyObject* PyBobIoMatlab_ReadMatrix(PyObject*, PyObject* args, PyObject* kwds) {
     return 0;
   }
   catch (...) {
-    PyErr_Format(PyExc_RuntimeError, "cannot read contents of variable `%s' at matlab file `%s'", varname, c_filename);
+    PyErr_Format(PyExc_RuntimeError, "cannot read contents of variable `%s' at matlab file `%s'", varname, filename);
     return 0;
   }
 
