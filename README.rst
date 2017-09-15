@@ -5,10 +5,10 @@
    :target: https://www.idiap.ch/software/bob/docs/bob/bob.io.matlab/stable/index.html
 .. image:: http://img.shields.io/badge/docs-latest-orange.svg
    :target: https://www.idiap.ch/software/bob/docs/bob/bob.io.matlab/master/index.html
-.. image:: https://gitlab.idiap.ch/bob/bob.io.matlab/badges/master/build.svg
-   :target: https://gitlab.idiap.ch/bob/bob.io.matlab/commits/master
-.. image:: https://gitlab.idiap.ch/bob/bob.io.matlab/badges/master/coverage.svg
-   :target: https://gitlab.idiap.ch/bob/bob.io.matlab/commits/master
+.. image:: https://gitlab.idiap.ch/bob/bob.io.matlab/badges/v2.0.10/build.svg
+   :target: https://gitlab.idiap.ch/bob/bob.io.matlab/commits/v2.0.10
+.. image:: https://gitlab.idiap.ch/bob/bob.io.matlab/badges/v2.0.10/coverage.svg
+   :target: https://gitlab.idiap.ch/bob/bob.io.matlab/commits/v2.0.10
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.io.matlab
 .. image:: http://img.shields.io/pypi/v/bob.io.matlab.svg
